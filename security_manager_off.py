@@ -18,19 +18,8 @@ def enable_usb_ports():
 def enable_bluetooth():
     try:
         # command gets bluetooth and disables it.
-        # Open the Bluetooth Registry key
-        key_path = r"SYSTEM\CurrentControlSet\Services\BTHPORT\Parameters"
-        key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, key_path, 0, winreg.KEY_SET_VALUE)
-
-        # Set the value to turn on Bluetooth
-        winreg.SetValueEx(key, "RadioEnable", 0, winreg.REG_DWORD, 1)
-
-        os.system("net start bthserv")
-
-        # Close the key
-        winreg.CloseKey(key)
-
-        print("Bluetooth enabled.")
+        command = "powershell -command \"Get-PnpDevice | Where-Object {$_.Friendlyname -like 'Bluetooth'} | Enable-PnpDevice -Confirm:$false\""
+        os.system(command)
         print("Bluetooth enabled")
     except Exception as e:
         print("Error:", e)
@@ -40,8 +29,10 @@ def enable_command_prompt():
     try:
         # the line below checks for level of privelege we have over the system.
         ctypes.windll.ntdll.RtlAdjustPrivilege(9, 1, 0, ctypes.byref(ctypes.c_bool()))
-        os.system("reg add HKCU\Software\Policies\Microsoft\Windows\System /v DisableCMD /t REG_DWORD /d 0 /f")
-        print("Command Prompt enabled.")
+        reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\\Policies\\Microsoft\\Windows\\System", 0, winreg.KEY_WRITE)
+        winreg.SetValueEx(reg_key, "DisableCMD", 0, winreg.REG_DWORD, 0) # value "0" enables the command prompt
+        winreg.CloseKey(reg_key)
+        print("Command Prompt disabled.")
     except Exception as e:
         print("Error:", e)
 

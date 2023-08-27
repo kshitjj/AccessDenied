@@ -10,7 +10,9 @@ def disable_usb_ports():
     try:
         # using the winreg change the value in window registry
         reg_key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, key_path, 0, winreg.KEY_SET_VALUE)
-        winreg.SetValueEx(reg_key, "Start", 0, winreg.REG_DWORD, 4)  # Changing usbstor to 4 disables the USB ports
+        winreg.SetValueEx(reg_key, "Start", 0, winreg.REG_DWORD, 4)  
+        # Changing to 4 disables the USB ports, note that this doesn't affect
+        # existing usb ports
         winreg.CloseKey(reg_key)
         print("USB ports disabled")
     except Exception as e:
@@ -31,7 +33,9 @@ def disable_bluetooth():
 def disable_command_prompt():
     try:
         ctypes.windll.ntdll.RtlAdjustPrivilege(9, 1, 0, ctypes.byref(ctypes.c_bool()))
-        os.system("reg add HKCU\Software\Policies\Microsoft\Windows\System /v DisableCMD /t REG_DWORD /d 1 /f")
+        reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\\Policies\\Microsoft\\Windows\\System", 0, winreg.KEY_WRITE)
+        winreg.SetValueEx(reg_key, "DisableCMD", 0, winreg.REG_DWORD, 2)
+        winreg.CloseKey(reg_key)
         print("Command Prompt disabled.")
     except Exception as e:
         print("Error:", e)
@@ -41,6 +45,8 @@ def block_website(website):
     hosts_path = r"C:\Windows\System32\drivers\etc\hosts"
 
     # Redirect ip which won't work, we can put anything here.
+    # Booting up a webserver at localhost, can allow us to show a webpage instead of 
+    # dead ip.
     redirect_ip = "127.0.0.1"
 
     # Search for host file
@@ -62,7 +68,7 @@ def block_website(website):
         print(f"{website} is already blocked.")
         return
 
-    # write the website and redirect to localhost/127.0.0.1
+    # this line adds a redirect to localhost
     with open(hosts_path, "a") as hosts_file:
         hosts_file.write(f"\n{redirect_ip} {website}")
         print(f"{website} blocked successfully.")
@@ -70,15 +76,11 @@ def block_website(website):
 def flush_dns_cache():
     # clearing the dns cache doesn't allow user to access the website even if they 
     # have been to the website before
-    system = platform.system()
-    if system == "Windows":
-        try:
-            subprocess.run(["ipconfig", "/flushdns"], capture_output=True, text=True, check=True)
-            print("DNS cache flushed successfully.")
-        except subprocess.CalledProcessError as e:
-            print("Error flushing DNS cache:", e)
-    else:
-        print("DNS cache flushing is not supported on this platform.")
+    try:
+        subprocess.run(["ipconfig", "/flushdns"], capture_output=True, text=True, check=True)
+        print("DNS cache flushed successfully.")
+    except subprocess.CalledProcessError as e:
+        print("Error flushing DNS cache:", e)
 
 # Main program
 if __name__ == "__main__":
