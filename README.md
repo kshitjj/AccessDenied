@@ -28,6 +28,8 @@ There's only one way, as the command prompt has been disabled
 3. Allow Python to run as an administrator
 
 ## Screenshots
+1. When Security Manager is turned on
 ![Screenshot when the security manager is turned on](https://github.com/kshitjj/SecureU-assignment/assets/50615534/b333160f-6ee9-4c46-b2b3-1d36018af042)
 
+2. When Security Manager is turned off
 ![Screenshot when the security manager is turned off](https://github.com/kshitjj/SecureU-assignment/assets/50615534/a766cf19-561a-4f95-af28-34bd5ae4ec4c)
