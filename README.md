@@ -1,5 +1,5 @@
 # SecureU assignment
-This repository was made to submit the assignment assigned by SecureU. The assignment consisted of creating a Python script that performed various operations to secure the desktop from outside attacks and limit a few functionalities to secure the device.
+This repository contains a Python script that performed various operations to secure the desktop from outside attacks and limit functionalities to secure the device.
 
 ## What this assignment is able to fulfill
 1. Block the USB port
