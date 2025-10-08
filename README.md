@@ -1,4 +1,4 @@
-# SecureU assignment
+# Access Denied
 This repository contains a Python script that performed various operations to secure the desktop from outside attacks and limit functionalities to secure the device.
 
 ## What this assignment is able to fulfill
